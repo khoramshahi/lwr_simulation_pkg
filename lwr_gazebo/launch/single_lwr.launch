@@ -1,0 +1,27 @@
+<launch>
+
+  <!-- If you need to use rviz for less graphic load -->
+  <arg name="use_rviz" default="true"/>
+  <arg name="gui" default="false" />
+
+
+  <!-- the urdf/sdf parameter -->
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find lwr_description)/model/arm_base.urdf.xacro'"/>
+
+
+  <!-- joint and robot state publishers of the full robot description -->
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="use_gui" value="true"/>
+  </node>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+  
+
+  <group if="$(arg use_rviz)">
+    <node name="lwr_rviz" pkg="rviz" type="rviz" respawn="false" args="-d $(find lwr_gazebo)/launch/rviz_config.rviz" output="screen"/>
+  </group>
+
+
+</launch>
+
+
+

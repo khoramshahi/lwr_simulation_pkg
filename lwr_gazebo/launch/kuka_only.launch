@@ -1,0 +1,122 @@
+<launch>
+
+  # Specify a name for the robot
+  <arg name="robot_name" default="kuka_lwr"/>
+
+
+  ##########################################################################
+  # Setting for robot description (possibly including gazebo plugins)
+  ##########################################################################
+
+  # the robot's xacro file
+  <arg name="robot_xacro" default="$(find lwr_description)/model/arm_base.urdf.xacro"/>
+
+
+  # if the xacro file (robot_xacro) needs additional arguments to xacro.py, put them in here.
+  <arg name="xacro_arguments" default=" " />
+  <!--arg name="xacro_arguments" default="sensor_on_table:=false 
+        use_ros_control:=$(arg load_ros_controllers) 
+        load_grasp_fix:=$(arg load_grasp_fix) 
+        add_transmission_pos:=$(arg transmission_pos)
+        add_transmission_vel:=$(arg transmission_vel)
+        trajectory_param_namespace:=jaco_trajectory
+        robot_components_namespace:=jaco"/-->
+
+  # Load robot_description on parameter server
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(arg robot_xacro)' $(arg xacro_arguments)"/>
+
+  ##########################################################################
+  # Gazebo - settings and launch
+  ##########################################################################
+
+  # load the world plugin loader (in package gazebo_world_plugin_loader) which launches several
+  # world plugins according to the specification in the ROS parameters. Note that you will
+  # have to load those parameters on the ROS parameter server BEFORE gazebo gets launched. 
+  <arg name="load_world_plugins" default="flase"/>
+
+  # Spawn location of the robot
+  <arg name="x" default="0"/>
+  <arg name="y" default="0"/>
+  <arg name="z" default="0"/>
+
+  # Gazebo world file
+  <arg name="gazebo_world_file" value="$(find lwr_gazebo)/worlds/empty_world.world"/>
+
+  # Prefix name in URDF
+  <!--arg name="jaco_prefix_name" default="lwr"/-->
+
+  # set the joint state topic such that any subscribers can read it from parameter  
+  <!--param name="joint_state_control_topic" value="$(arg joint_state_publisher_topic)"/-->
+
+  # Parameter required for gazebo_joint_control/GazeboJointStatePublisher.
+  # set the joint states topic as ROS parameter: The joint state publisher
+  # will publish the joint states on this topic. 
+  <!--param name="publish_joint_states_topic" value="$(arg joint_states_topic)"/-->
+
+  # if there are extra configuration for gazebo
+  <arg name="extra_gazebo_args" default=""/>  
+
+
+  # launch gazebo 
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name"    value="$(arg gazebo_world_file)"/> 
+    <arg name="paused"        value="false"/>
+    <arg name="verbose"       value="false"/>
+    <arg name="use_sim_time"  value="true"/>
+    <arg name="gui"           value="true"/>
+    <arg name="headless"      value="false"/>
+    <arg name="debug"         value="false"/>
+    <arg name="extra_gazebo_args" value="$(arg extra_gazebo_args)"/>  
+  </include>
+
+
+
+
+  ##########################################################################
+  # spawn robot 
+  ##########################################################################
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" 
+        args="-param robot_description -urdf -x $(arg x) -y $(arg y) -z $(arg z) -model $(arg robot_name)"
+        respawn="false" output="screen"/>
+
+
+  ##########################################################################
+  # ROS comminucation for robot state and joint publisher
+  ##########################################################################
+
+  # setting for joint_state_publisher
+  <arg name="load_joint_state_publisher"  default="true"/>
+  <arg name="joint_state_publisher_topic" default="$(arg robot_name)/joint_state"/>
+
+  # setting for robot_state_publisher
+  <arg name="load_robot_state_publisher" default="true"/>
+  <arg name="joint_states_topic" default="$(arg robot_name)/joint_state"/>
+
+
+  # staring the robot_state_publisher
+  <node if="$(arg load_robot_state_publisher)" 
+    name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" 
+    respawn="true" output="screen">
+    <remap from="joint_states" to="$(arg joint_states_topic)"/>
+    <param name="publish_frequency" type="double" value="100.0"/>
+  </node>
+
+  # staring the joint_state_publisher
+  <node if="$(arg load_joint_state_publisher)" 
+    name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="use_gui" value="true" />
+    <param name="rate" value="10" />
+    <remap from="joint_states" to="$(arg joint_state_publisher_topic)" />
+       <!--rosparam param="source_list">[/lwr/joint_states]</rosparam-->
+  </node>
+
+
+
+  ##########################################################################
+  # Visualization in Rviz 
+  ##########################################################################
+  <node name="lwr_rviz" pkg="rviz" type="rviz" respawn="false" 
+    args="-d $(find lwr_gazebo)/launch/rviz_config.rviz" output="screen"/>
+
+
+</launch>
