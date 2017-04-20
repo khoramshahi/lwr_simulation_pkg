@@ -9,7 +9,7 @@
   ##########################################################################
 
   # the robot's xacro file
-  <arg name="robot_xacro" default="$(find lwr_simulation)/model/$(arg robot_name).urdf.xacro"/>
+  <arg name="robot_xacro" default="$(find lwr_simulation)/model/lwr_on_table_gzplugins.xacro"/>
 
 
   # if the xacro file (robot_xacro) needs additional arguments to xacro.py, put them in here.

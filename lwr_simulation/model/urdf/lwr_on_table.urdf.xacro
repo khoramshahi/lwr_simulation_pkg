@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root 
+ xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+ xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+ xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+ xmlns:xacro="http://ros.org/wiki/xacro">
+
+
+
+
+<!-- MACRO FOR THE ROBOT ARM ON THE TABLE-->
+<xacro:macro name="lwr_on_table" params="parent *origin">
+    
+    <xacro:arg name="sensor_on_table" default="false"/>
+
+    <!-- not used! these features are not integrated yet -->
+    <xacro:arg name="add_transmission_pos" default="false"/>
+    <xacro:arg name="add_transmission_vel" default="false"/>
+
+
+    <!-- and assemble the table and the robot and other objects if needed -->
+	<joint name="base_to_lwr_on_table" type="fixed">
+		<xacro:insert_block name="origin" />
+		<parent link="${parent}" />
+		<child  link="robot_base" />
+	</joint>
+
+	<link name="robot_base">
+		<static>false</static>
+	</link>
+
+	<xacro:include filename="$(find lwr_simulation)/model/urdf/objects/table.xacro" />
+	<joint name="table_to_arm" type="fixed">
+		<origin xyz="0 0 0.3" rpy="0 0 0" />
+		<parent link="robot_base"/>
+		<child link="table_base"/>
+	</joint>
+
+	
+	<!-- Add the lwr arm to the given parent link with the given transforms -->
+	<xacro:include filename="$(find lwr_simulation)/model/urdf/robots/kuka_lwr.urdf.xacro"/>
+    <xacro:kuka_lwr parent="tabletop_ontop" name="lwr">
+		<origin xyz="0 0 0" rpy="0 0 0" />
+        <xacro:arg name="add_transmission_pos" default="$(arg add_transmission_pos)"/>
+        <xacro:arg name="add_transmission_vel" default="$(arg add_transmission_vel)"/>
+	</xacro:kuka_lwr>
+
+
+
+</xacro:macro>
+</root>
+

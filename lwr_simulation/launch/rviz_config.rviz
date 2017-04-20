@@ -9,6 +9,7 @@ Panels:
         - /RobotModel1
         - /RobotModel1/Links1
         - /TF1
+        - /TF1/Frames1
       Splitter Ratio: 0.5
     Tree Height: 603
   - Class: rviz/Selection
@@ -61,11 +62,6 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        box:
-          Alpha: 1.20000005
-          Show Axes: false
-          Show Trail: false
-          Value: true
         lwr_1_link:
           Alpha: 1
           Show Axes: false
@@ -134,6 +130,32 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        robot_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        table_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        table_top:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        tabletop_corner:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        tabletop_ontop:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        world:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
@@ -145,8 +167,6 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        box:
-          Value: false
         lwr_1_link:
           Value: true
         lwr_1_link_dummy:
@@ -177,42 +197,60 @@ Visualization Manager:
           Value: false
         lwr_base_link:
           Value: true
+        robot_base:
+          Value: true
+        table_base:
+          Value: true
+        table_top:
+          Value: true
+        tabletop_corner:
+          Value: false
+        tabletop_ontop:
+          Value: false
+        world:
+          Value: true
       Marker Scale: 0.449999988
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        box:
-          lwr_base_link:
-            lwr_1_link:
-              lwr_2_link:
-                lwr_3_link:
-                  lwr_4_link:
-                    lwr_5_link:
-                      lwr_6_link:
-                        lwr_7_link:
+        world:
+          robot_base:
+            table_base:
+              table_top:
+                tabletop_ontop:
+                  lwr_base_link:
+                    lwr_1_link:
+                      lwr_2_link:
+                        lwr_3_link:
+                          lwr_4_link:
+                            lwr_5_link:
+                              lwr_6_link:
+                                lwr_7_link:
+                                  {}
+                                lwr_7_link_dummy:
+                                  {}
+                              lwr_6_link_dummy:
+                                {}
+                            lwr_5_link_dummy:
+                              {}
+                          lwr_4_link_dummy:
+                            {}
+                        lwr_3_link_dummy:
                           {}
-                        lwr_7_link_dummy:
-                          {}
-                      lwr_6_link_dummy:
+                      lwr_2_link_dummy:
                         {}
-                    lwr_5_link_dummy:
+                    lwr_1_link_dummy:
                       {}
-                  lwr_4_link_dummy:
+                  tabletop_corner:
                     {}
-                lwr_3_link_dummy:
-                  {}
-              lwr_2_link_dummy:
-                {}
-            lwr_1_link_dummy:
-              {}
       Update Interval: 0
       Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: box
+    Fixed Frame: world
     Frame Rate: 30
   Name: root
   Tools:
@@ -233,7 +271,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.87491822
+      Distance: 1.81719089
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -247,10 +285,10 @@ Visualization Manager:
       Focal Shape Size: 0.0500000007
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.67979753
+      Pitch: 0.514797628
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.12220716
+      Yaw: 1.3890202
     Saved: ~
 Window Geometry:
   Displays:
