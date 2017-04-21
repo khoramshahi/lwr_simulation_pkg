@@ -28,6 +28,13 @@
         <origin xyz="0 0 0" rpy="0 0 0" />
     </xacro:lwr_on_table>
 
+    <!-- Attaching the gazebo plugings to the robot -->
+    <xacro:if value="true">
+        <xacro:include filename="$(find lwr_simulation)/model/gzplugins/gzplugin_lwr_interface.xacro"/>
+        <xacro:gzplugin_lwr_joint_interface robot_components_namespace="$(arg robot_components_namespace)"/>
+    </xacro:if>
+
+
 
     <!-- Attaching the gazebo plugings to the robot -->
     <!--xacro:if value="$(arg use_ros_control)">

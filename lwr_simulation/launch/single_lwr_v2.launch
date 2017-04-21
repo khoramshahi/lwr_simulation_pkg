@@ -13,7 +13,7 @@
 
 
   # if the xacro file (robot_xacro) needs additional arguments to xacro.py, put them in here.
-  <arg name="xacro_arguments" default=" " />
+  <arg name="xacro_arguments" default="robot_components_namespace:=lwr" />
   <!--arg name="xacro_arguments" default="sensor_on_table:=false 
         use_ros_control:=$(arg load_ros_controllers) 
         load_grasp_fix:=$(arg load_grasp_fix) 
@@ -90,7 +90,7 @@
 
   # setting for robot_state_publisher
   <arg name="load_robot_state_publisher" default="true"/>
-  <arg name="joint_states_topic" default="$(arg robot_name)/joint_state"/>
+  <arg name="joint_states_topic" default="gazebo/joint_state"/>
 
 
   # staring the robot_state_publisher

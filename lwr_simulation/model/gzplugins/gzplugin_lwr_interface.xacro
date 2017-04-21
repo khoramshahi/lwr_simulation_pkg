@@ -6,6 +6,21 @@
  xmlns:xacro="http://ros.org/wiki/xacro">
 
 
+<!-- macro to laod lwr joint interface -->
+<xacro:macro name="gzplugin_lwr_joint_interface" params="robot_components_namespace">
+    <gazebo>
+        <plugin name="gzplugin_lwr_joint_state_publisher" filename="libGazeboLwrJointStatePublisher.so">
+            <robot_components_namespace>
+                ${robot_components_namespace} 
+            </robot_components_namespace>
+        </plugin>
+    </gazebo>
+</xacro:macro>
+
+
+
+
+
 
 
 <!-- macro to laod jaco control plugins -->
