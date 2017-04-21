@@ -8,9 +8,10 @@
 
 
 
+
 namespace gazebo
 {
-class GazeboJointInterface : public ModelPlugin
+class GazeboJointStateInterface : public ModelPlugin
 {
 protected:
 	physics::ModelPtr model;
@@ -24,17 +25,14 @@ private:
 	event::ConnectionPtr update_connection;
 
 
-public: GazeboJointInterface()
+public: GazeboJointStateInterface()
 {
-	printf("Hello World! If you see this it means that you are awesome!!!!!!!\n");
-	ROS_INFO("Creating GazeboJointStatePublisher plugin ...");
-
-
+	ROS_INFO("Creating GazeboJointStateInterface plugin ...");
 }
 
 public: virtual void Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
 {
-	ROS_INFO("Loading GazeboJointInterface");
+	ROS_INFO("Loading GazeboJointStateInterface");
 
 	// Make sure the ROS node for Gazebo has already been initalized
 	if (!ros::isInitialized())
@@ -90,7 +88,7 @@ public: virtual void Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
 	model = _parent;
 	pub_js = node_handle.advertise<sensor_msgs::JointState>("/gazebo/joint_state", 1000);
 
-	update_connection = event::Events::ConnectWorldUpdateBegin(boost::bind(&GazeboJointInterface::WorldUpdate, this));
+	update_connection = event::Events::ConnectWorldUpdateBegin(boost::bind(&GazeboJointStateInterface::WorldUpdate, this));
 
 
 
@@ -143,5 +141,5 @@ void readJointStates(sensor_msgs::JointState& js)
 
 
 };
-GZ_REGISTER_MODEL_PLUGIN(GazeboJointInterface)
+GZ_REGISTER_MODEL_PLUGIN(GazeboJointStateInterface)
 }

@@ -14,6 +14,11 @@
                 ${robot_components_namespace} 
             </robot_components_namespace>
         </plugin>
+        <plugin name="gzplugin_lwr_joint_command_subscriber" filename="libGazeboLwrJointCommandSubscriber.so">
+            <robot_components_namespace>
+                ${robot_components_namespace} 
+            </robot_components_namespace>
+        </plugin>
     </gazebo>
 </xacro:macro>
 

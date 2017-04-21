@@ -132,12 +132,17 @@ include_directories(
    src/GazeboLwrJointStatePublisher.cpp
  )
 
+ add_library(GazeboLwrJointCommandSubscriber SHARED
+   src/GazeboLwrJointCommandSubscriber.cpp
+ )
+
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
 # add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
-add_dependencies(GazeboLwrJointStatePublisher ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(GazeboLwrJointStatePublisher    ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(GazeboLwrJointCommandSubscriber ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 
 link_directories(
@@ -169,7 +174,8 @@ set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
 # )
 
 
-target_link_libraries(GazeboLwrJointStatePublisher ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(GazeboLwrJointStatePublisher    ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(GazeboLwrJointCommandSubscriber ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
 
 #############
