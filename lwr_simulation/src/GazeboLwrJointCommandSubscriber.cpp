@@ -1,16 +1,16 @@
-
-
 #include <gazebo/gazebo.hh>
 #include <gazebo/physics/physics.hh>
-//#include <gazebo/transport/transport.hh>
-//#include <gazebo/msgs/msgs.hh>
+
+
 
 
 #include <ros/ros.h>
 #include <sensor_msgs/JointState.h>
+//#include <std_msgs/Float32MultiArray.h>
+//#include <std_msgs/String.h>
 
-#include <map>
 #include <string>
+//#include <iterator>
 
 
 namespace gazebo
@@ -18,33 +18,14 @@ namespace gazebo
 class GazeboJointCommandInterface : public ModelPlugin
 {
 
-
-private:
-//	event::ConnectionPtr update_connection;
-
 public:
+	physics::WorldPtr world;
 	physics::ModelPtr model;
-//	physics::Link_V updatedLinks;
-//	std::map<std::string, physics::JointPtr> joints;
-//
-//
-//
-	ros::NodeHandle* node;
-	ros::Subscriber sub_jointCommand;
-//
-//	common::Time prevUpdateTime;
-//
-//
-//	std::map<std::string, double> forces;
-//
-//
-//
-//	/// To be implemented late
-//	std::map<std::string, double> positions;
-//	std::map<std::string, double> velocities;
-//
-//	std::map<std::string, common::PID> posPids;
-//	std::map<std::string, common::PID> velPids;
+
+	std::string topic_name;
+
+	ros::NodeHandle node_handle;
+	ros::Subscriber sub_jointCommands;
 
 
 public: GazeboJointCommandInterface()
@@ -58,20 +39,55 @@ public: virtual void Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
 
 	ROS_INFO("Loading GazeboJointCommandInterface");
 
+    world = _parent->GetWorld();
+	ROS_INFO_STREAM("Gazebo world is deteced; Name: " << world->GetName());
+
+
+	std::string robotName = _parent->GetName();
+	ROS_INFO_STREAM("A robot model is deteceted: " << robotName);
+
+
+//    if ( _sdf->HasElement("robotNamespace") )
+//    	this->robot_namespace_ = _sdf->GetElement("robotNamespace")->Get<std::string>() + "/";
+
+
+
+	if (_sdf->HasElement("robot_components_namespace"))
+	{
+		sdf::ElementPtr armParamElem = _sdf->GetElement("robot_components_namespace");
+		std::string armNamespace = armParamElem->Get<std::string>();
+		ROS_INFO_STREAM("The robot components namespace is detected : " << armNamespace);
+	}
+	else
+	{
+		ROS_WARN("SDF Element 'robot_components_namespace' not defined, so using robot name as namespace for components.");
+	}
+
 
 	// Safety check
 	if (_parent->GetJointCount() == 0)
 	{
-		std::cerr << "There is no joint to be loaded\n";
+		ROS_ERROR("There is no joint to be loaded\n");
 		return;
 	}
+	ROS_INFO_STREAM("Number of detected joints: " << _parent->GetJointCount());
 
-	std::string armNamespace = _parent->GetName();
-	ROS_INFO_STREAM("A model is deteceted: " << armNamespace);
 
 	// Store the model pointer for convenience.
-	this->model = _parent;
+	model = _parent;
 
+
+
+
+    if ( !_sdf->HasElement("topicName") )
+    {
+    	topic_name = "/gazebo/joint_commands";
+        ROS_WARN("No rostopic name is detected, using the default name : %s", topic_name.c_str() );
+    }
+    else
+    {
+    	topic_name = _sdf->GetElement("topicName")->Get<std::string>();
+    }
 
 	// Make sure the ROS node for Gazebo has already been initalized
 	if (!ros::isInitialized())
@@ -81,54 +97,26 @@ public: virtual void Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
 		return;
 	}
 
+	sub_jointCommands = node_handle.subscribe( topic_name, 1, &GazeboJointCommandInterface::CallBackMethod, this, ros::TransportHints().tcpNoDelay() );
 
-
-	// Create the node
-//	this->node = transport::NodePtr(new transport::Node());
-//	this->node->Init("my_gazebo_node");
-
-//#if GAZEBO_MAJOR_VERSION < 8
-//	ROS_INFO_STREAM("The name of the model is : " << this->model->GetWorld()->GetName());
-//	this->node->Init(this->model->GetWorld()->GetName());
-//#else
-//	ROS_INFO_STREAM("The name of the model is : " << this->model->GetWorld()->Name());
-//	this->node->Init(this->model->GetWorld()->Name());
-//#endif
-
-
-
-
-    this->node = new ros::NodeHandle("my_gzplugin");
-
-
-	// Create a topic name
-	std::string topicName = "/gazebo/joint_commands";
-
-	// Subscribe to the topic, and register a callback
-//	this->sub_jointCommand = this->node->subscribe(topicName, 1, &GazeboJointCommandInterface::OnJointCommand, this, ros::TransportHints().tcpNoDelay());
-
-
-
-//	ROS_INFO_STREAM("A Node is inititaded, TopicNameSpace : " << this->node->get getNamespace() ) <<
-//			" id : " << this->node->getId() <<
-//			" message type : " << this->node-> );
-
-
-
-	//std::cout << this->node->GetTopicNamespace() << std::endl;
-	//
-	//	//	this->joints = model->GetJoints()[3];
-	//
-	//
 
 
 
 }
-void OnJointCommand(ConstJointCmdPtr &_msg)
+
+void CallBackMethod(sensor_msgs::JointStateConstPtr  _msg)
 {
-	int i =0;
-}
+    // From: https://gist.github.com/alexsleat/1372845
 
+    int i = 0;
+    // float64 is implemented as double, see http://wiki.ros.org/msg#Fields
+    for (std::vector<double>::const_iterator it = _msg->effort.begin(); it != _msg->effort.end(); ++it )
+    {
+    	ROS_INFO_STREAM("For joint :  " <<  _msg->name[i] << " received desired fore =  "<< *it);
+//        this->fp_torques[i] = *it;
+        i++;
+    }
+}
 
 
 };
