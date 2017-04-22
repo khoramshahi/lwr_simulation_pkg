@@ -1,7 +1,7 @@
 <launch>
 
   # Specify a name for the robot
-  <arg name="robot_name" default="kuka_lwr"/>
+  <arg name="robot_name" default="lwr_robot"/>
 
 
   ##########################################################################
@@ -9,11 +9,11 @@
   ##########################################################################
 
   # the robot's xacro file
-  <arg name="robot_xacro" default="$(find lwr_description)/model/arm_base.urdf.xacro"/>
+  <arg name="robot_xacro" default="$(find lwr_simulation)/model/lwr_on_table_gzplugins.xacro"/>
 
 
   # if the xacro file (robot_xacro) needs additional arguments to xacro.py, put them in here.
-  <arg name="xacro_arguments" default=" " />
+  <arg name="xacro_arguments" default="robot_components_namespace:=lwr" />
   <!--arg name="xacro_arguments" default="sensor_on_table:=false 
         use_ros_control:=$(arg load_ros_controllers) 
         load_grasp_fix:=$(arg load_grasp_fix) 
@@ -40,7 +40,7 @@
   <arg name="z" default="0"/>
 
   # Gazebo world file
-  <arg name="gazebo_world_file" value="$(find lwr_gazebo)/worlds/empty_world.world"/>
+  <arg name="gazebo_world_file" value="$(find lwr_simulation)/model/worlds/empty_world.world"/>
 
   # Prefix name in URDF
   <!--arg name="jaco_prefix_name" default="lwr"/-->
@@ -90,7 +90,7 @@
 
   # setting for robot_state_publisher
   <arg name="load_robot_state_publisher" default="true"/>
-  <arg name="joint_states_topic" default="$(arg robot_name)/joint_state"/>
+  <arg name="joint_states_topic" default="gazebo/joint_state"/>
 
 
   # staring the robot_state_publisher
@@ -106,8 +106,8 @@
     name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
     <param name="use_gui" value="true" />
     <param name="rate" value="10" />
-    <remap from="joint_states" to="$(arg joint_state_publisher_topic)" />
-       <!--rosparam param="source_list">[/lwr/joint_states]</rosparam-->
+    <!--remap from="joint_states" to="$(arg joint_state_publisher_topic)" /-->
+       <rosparam param="source_list">[/gazebo/joint_state]</rosparam>
   </node>
 
 
@@ -115,8 +115,8 @@
   ##########################################################################
   # Visualization in Rviz 
   ##########################################################################
-  <node name="lwr_rviz" pkg="rviz" type="rviz" respawn="false" 
-    args="-d $(find lwr_gazebo)/launch/rviz_config.rviz" output="screen"/>
+  <node if="true" name="lwr_rviz" pkg="rviz" type="rviz" respawn="false" 
+    args="-d $(find lwr_simulation)/launch/rviz_config.rviz" output="screen"/>
 
 
 </launch>

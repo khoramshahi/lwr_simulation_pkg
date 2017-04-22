@@ -159,6 +159,10 @@ void OnJointCommand(sensor_msgs::JointStateConstPtr  _msg)
 		i++;
 	}
 
+	//for (std::vector<std::string>::const_iterator it_rec = _msg->name.begin(); it_rec != _msg->name.end(); ++it_rec )
+
+
+
 	return;
 }
 

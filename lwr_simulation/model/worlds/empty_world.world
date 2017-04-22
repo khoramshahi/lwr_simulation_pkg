@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <sdf version="1.4">
-  <world name="default">
+  <world name="empty_zeroGravity_world">
     <physics type="ode">
       <gravity>0.000000 0.000000 0.00000</gravity>
       <ode>
