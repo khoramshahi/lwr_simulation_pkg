@@ -2,16 +2,22 @@ cmake_minimum_required(VERSION 2.8.3)
 project(lwr_simulation)
 
 ## Add support for C++11, supported in ROS Kinetic and newer
-add_definitions(-std=c++11)
+add_definitions(-fpermissive -std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  cmake_modules
   std_msgs
+  geometry_msgs
+  sensor_msgs
   tf
+  tf_conversions
   urdf
+  kdl_parser
+  kdl_conversions
 )
 
 ## System dependencies are found with CMake's conventions
@@ -127,7 +133,8 @@ include_directories(
 
 
 ## Declare a C++ library
-# create a new library with same name of cpp file. 
+
+# I am creating a new library with same name of cpp file. 
  add_library(GazeboLwrJointStatePublisher SHARED
    src/GazeboLwrJointStatePublisher.cpp
  )
@@ -158,6 +165,9 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/lwr_simulation_node.cpp)
 
+add_executable(GazeboLwrForwardKinematics src/GazeboLwrForwardKinematics.cpp)
+
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -176,6 +186,8 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
 
 target_link_libraries(GazeboLwrJointStatePublisher    ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 target_link_libraries(GazeboLwrJointCommandSubscriber ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+
+target_link_libraries(GazeboLwrForwardKinematics ${catkin_LIBRARIES})
 
 
 #############

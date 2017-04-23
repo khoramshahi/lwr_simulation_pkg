@@ -63,7 +63,7 @@
     <arg name="paused"        value="false"/>
     <arg name="verbose"       value="false"/>
     <arg name="use_sim_time"  value="true"/>
-    <arg name="gui"           value="true"/>
+    <arg name="gui"           value="false"/>
     <arg name="headless"      value="false"/>
     <arg name="debug"         value="false"/>
     <arg name="extra_gazebo_args" value="$(arg extra_gazebo_args)"/>  
@@ -85,7 +85,7 @@
   ##########################################################################
 
   # setting for joint_state_publisher
-  <arg name="load_joint_state_publisher"  default="true"/>
+  <arg name="load_joint_state_publisher"  default="false"/>
   <arg name="joint_state_publisher_topic" default="$(arg robot_name)/joint_state"/>
 
   # setting for robot_state_publisher
@@ -117,6 +117,17 @@
   ##########################################################################
   <node if="true" name="lwr_rviz" pkg="rviz" type="rviz" respawn="false" 
     args="-d $(find lwr_simulation)/launch/rviz_config.rviz" output="screen"/>
+
+
+  ##########################################################################
+  # Handling the forwardKinematics 
+  ##########################################################################
+
+    <!-- Load joint kinematics configurations from YAML file to parameter server -->
+
+  <node if="true" name="GzLwrFk" pkg="lwr_simulation" type="GazeboLwrForwardKinematics" respawn="false" output="screen">
+    <rosparam file="$(find lwr_simulation)/config/kinematics.yaml" command="load"/>
+  </node>
 
 
 </launch>

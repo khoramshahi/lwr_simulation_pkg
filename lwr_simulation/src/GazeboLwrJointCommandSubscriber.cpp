@@ -189,10 +189,10 @@ void WorldUpdate()
 		physics::JointPtr joint = *it;
 		joint->SetForce(0,desired_js.effort[nJoint]);
 
-		if (desired_js.effort[nJoint] != 0)
-			ROS_INFO_STREAM("For joint number :" << nJoint <<
-					" I am applying a foce here of " << desired_js.effort[nJoint]
-				             << " from " << desired_js.name[nJoint]<< " to " << joint->GetName());
+//		if (desired_js.effort[nJoint] != 0)
+//			ROS_INFO_STREAM("For joint number :" << nJoint <<
+//					" I am applying a foce here of " << desired_js.effort[nJoint]
+//				             << " from " << desired_js.name[nJoint]<< " to " << joint->GetName());
 
 		nJoint ++;
 
